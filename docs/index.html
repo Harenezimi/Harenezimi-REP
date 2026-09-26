@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>КнигоФорум — платформа для любителей книг</title>
+<meta name="description" content="КнигоФорум — форум для любителей книг: описания книг и циклов, поиск по жанру и рейтингу, оценки, комментарии и ссылки на покупку/скачивание." />
+<style>
+  :root {
+    --color-bg: #faf3e8;
+    --color-surface: #fffaf2;
+    --color-border: #e2cfae;
+    --color-text: #3b2c20;
+    --color-muted: #8a7660;
+    --color-brand: #7a4b28;
+    --color-brand-dark: #5c3719;
+    --color-accent: #b5651d;
+    --color-completed: #4c7a4c;
+    --color-ongoing: #b5651d;
+    --color-single: #6a6a9a;
+    --radius: 10px;
+    --shadow: 0 2px 8px rgba(59, 44, 32, 0.08);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: Georgia, 'Times New Roman', serif;
+    background: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+  }
+
+  a { color: var(--color-brand); }
+
+  .container {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  header.hero {
+    background: linear-gradient(160deg, var(--color-brand), var(--color-brand-dark));
+    color: #fff;
+    padding: 64px 0 56px;
+    text-align: center;
+  }
+
+  header.hero .badge-mvp {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.4);
+    padding: 4px 14px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 18px;
+  }
+
+  header.hero h1 {
+    font-size: 2.6rem;
+    margin: 0 0 12px;
+  }
+
+  header.hero p.tagline {
+    font-size: 1.15rem;
+    max-width: 640px;
+    margin: 0 auto 28px;
+    color: #f2e6d3;
+  }
+
+  .cta-row {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .button {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .button-primary {
+    background: #fff;
+    color: var(--color-brand-dark);
+  }
+
+  .button-outline {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.6);
+  }
+
+  main section {
+    padding: 56px 0;
+  }
+
+  h2.section-title {
+    font-size: 1.7rem;
+    text-align: center;
+    margin: 0 0 40px;
+    color: var(--color-brand-dark);
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .feature-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 22px;
+    box-shadow: var(--shadow);
+  }
+
+  .feature-card .icon {
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+  }
+
+  .feature-card h3 {
+    margin: 0 0 8px;
+    font-size: 1.1rem;
+    color: var(--color-brand-dark);
+  }
+
+  .feature-card p {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 0.95rem;
+  }
+
+  .mockup {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .mockup-header {
+    background: var(--color-brand);
+    color: #fff;
+    padding: 14px 20px;
+    font-weight: bold;
+  }
+
+  .mockup-body {
+    padding: 20px;
+  }
+
+  .mockup-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .mockup-card:last-child { border-bottom: none; }
+
+  .mockup-card h4 {
+    margin: 0 0 4px;
+  }
+
+  .mockup-card .author {
+    color: var(--color-muted);
+    font-style: italic;
+    font-size: 0.9rem;
+    margin: 0 0 8px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    color: #fff;
+  }
+
+  .badge-completed { background: var(--color-completed); }
+  .badge-ongoing { background: var(--color-ongoing); }
+  .badge-single { background: var(--color-single); }
+
+  .mockup-rating {
+    color: var(--color-accent);
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  .stack-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .stack-chip {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    color: var(--color-brand-dark);
+  }
+
+  .note-box {
+    background: #fdf0dc;
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-accent);
+    border-radius: 8px;
+    padding: 18px 22px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .note-box p { margin: 0; }
+  .note-box code {
+    background: rgba(0,0,0,0.06);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  footer {
+    background: var(--color-brand-dark);
+    color: #f0e6d6;
+    text-align: center;
+    padding: 28px 0;
+    font-size: 0.85rem;
+  }
+
+  footer a { color: #fff; }
+
+  @media (max-width: 600px) {
+    header.hero h1 { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="container">
+    <span class="badge-mvp">MVP РЕАЛИЗОВАН</span>
+    <h1>КнигоФорум</h1>
+    <p class="tagline">
+      Форум для любителей книг: делитесь описаниями книг и циклов, находите
+      новое по жанру и рейтингу, узнавайте, завершён ли цикл — и где его
+      можно почитать.
+    </p>
+    <div class="cta-row">
+      <a class="button button-primary" href="https://github.com/Harenezimi/Harenezimi-REP">Смотреть код на GitHub</a>
+      <a class="button button-outline" href="https://github.com/Harenezimi/Harenezimi-REP#запуск">Как запустить локально</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="container">
+      <h2 class="section-title">Что умеет платформа</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="icon">📚</div>
+          <h3>Книги и циклы</h3>
+          <p>Единая карточка для отдельной книги или цикла — с жанрами, описанием и статусом «завершён / продолжается».</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🔍</div>
+          <h3>Поиск и фильтры</h3>
+          <p>Поиск по названию и автору, фильтры по жанру, минимальному рейтингу и статусу цикла — прямо в URL.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">⭐</div>
+          <h3>Рейтинги</h3>
+          <p>Оценка от 1 до 5 звёзд на пользователя, средний рейтинг и число голосов на каждой карточке.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">💬</div>
+          <h3>Комментарии</h3>
+          <p>Живое обсуждение книг и циклов сообществом читателей под каждой записью.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🔗</div>
+          <h3>Где почитать</h3>
+          <p>Блок ссылок «Купить» / «Скачать», который сообщество наполняет само.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🔐</div>
+          <h3>Аккаунты</h3>
+          <p>Регистрация и вход с bcrypt-хешированием паролей, сессии на сервере, личный список «Мои записи».</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2 class="section-title">Каталог книг и циклов</h2>
+      <div class="mockup">
+        <div class="mockup-header">КнигоФорум · Каталог</div>
+        <div class="mockup-body">
+          <div class="mockup-card">
+            <div>
+              <h4>Ведьмак</h4>
+              <p class="author">Анджей Сапковский</p>
+              <span class="badge badge-completed">Цикл завершён</span>
+            </div>
+            <div class="mockup-rating">★ 5.0 (2)</div>
+          </div>
+          <div class="mockup-card">
+            <div>
+              <h4>Тёмная башня</h4>
+              <p class="author">Стивен Кинг</p>
+              <span class="badge badge-ongoing">Цикл продолжается</span>
+            </div>
+            <div class="mockup-rating">★ 4.0 (1)</div>
+          </div>
+          <div class="mockup-card">
+            <div>
+              <h4>Убийство в «Восточном экспрессе»</h4>
+              <p class="author">Агата Кристи</p>
+              <span class="badge badge-single">Отдельная книга</span>
+            </div>
+            <div class="mockup-rating">★ 4.5 (2)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2 class="section-title">Технологии</h2>
+      <div class="stack-row">
+        <span class="stack-chip">Node.js</span>
+        <span class="stack-chip">Express</span>
+        <span class="stack-chip">EJS (SSR)</span>
+        <span class="stack-chip">SQLite · better-sqlite3</span>
+        <span class="stack-chip">express-session</span>
+        <span class="stack-chip">bcryptjs</span>
+        <span class="stack-chip">express-validator</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="note-box">
+        <p>
+          Эта страница — статичная витрина проекта на GitHub Pages. Само
+          приложение серверное (Node.js/Express + SQLite с сессиями и
+          регистрацией), поэтому здесь оно не запускается «вживую». Чтобы
+          попробовать всё — регистрацию, каталог, оценки и комментарии —
+          склонируйте репозиторий и запустите локально:
+        </p>
+        <p style="margin-top: 14px;">
+          <code>npm install && npm run seed && npm start</code>
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <p>
+      КнигоФорум — учебный/демонстрационный проект.
+      <a href="https://github.com/Harenezimi/Harenezimi-REP">Исходный код на GitHub</a>
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
