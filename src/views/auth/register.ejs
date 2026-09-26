@@ -1,0 +1,37 @@
+<%- include('../partials/header', { title: 'Регистрация' }) %>
+
+<div class="form-page">
+  <h1>Регистрация</h1>
+
+  <% if (errors && errors.length) { %>
+    <ul class="error-list">
+      <% errors.forEach(function(err) { %>
+        <li><%= err.msg %></li>
+      <% }); %>
+    </ul>
+  <% } %>
+
+  <form action="/register" method="POST" class="stack-form">
+    <label>
+      Имя пользователя
+      <input type="text" name="username" value="<%= values.username || '' %>" required minlength="3" maxlength="30" />
+    </label>
+    <label>
+      Email
+      <input type="email" name="email" value="<%= values.email || '' %>" required />
+    </label>
+    <label>
+      Пароль
+      <input type="password" name="password" required minlength="6" />
+    </label>
+    <label>
+      Повторите пароль
+      <input type="password" name="passwordConfirm" required minlength="6" />
+    </label>
+    <button type="submit" class="button">Зарегистрироваться</button>
+  </form>
+
+  <p>Уже есть аккаунт? <a href="/login">Войти</a></p>
+</div>
+
+<%- include('../partials/footer') %>

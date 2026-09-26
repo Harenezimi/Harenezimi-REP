@@ -1,0 +1,48 @@
+<%- include('../partials/header', { title: 'Мои записи' }) %>
+
+<div class="catalog-page">
+  <h1>Мои записи</h1>
+
+  <% if (entries.length === 0) { %>
+    <p class="empty-state">
+      Вы ещё не опубликовали ни одной записи.
+      <a href="/entries/new">Добавить первую</a>?
+    </p>
+  <% } else { %>
+    <div class="entry-grid">
+      <% entries.forEach(function(entry) { %>
+        <a class="entry-card" href="/entries/<%= entry.id %>">
+          <% if (entry.cover_url) { %>
+            <img class="entry-cover" src="<%= entry.cover_url %>" alt="<%= entry.title %>" />
+          <% } %>
+          <div class="entry-card-body">
+            <h2><%= entry.title %></h2>
+            <p class="entry-author"><%= entry.author %></p>
+
+            <div class="badges">
+              <% if (entry.is_series) { %>
+                <% if (entry.series_status === 'completed') { %>
+                  <span class="badge badge-completed">Цикл завершён</span>
+                <% } else { %>
+                  <span class="badge badge-ongoing">Цикл продолжается</span>
+                <% } %>
+              <% } else { %>
+                <span class="badge badge-single">Отдельная книга</span>
+              <% } %>
+            </div>
+
+            <div class="rating">
+              <% if (entry.rating_count > 0) { %>
+                ★ <%= entry.avg_rating.toFixed(1) %> (<%= entry.rating_count %>)
+              <% } else { %>
+                <span class="muted">Ещё нет оценок</span>
+              <% } %>
+            </div>
+          </div>
+        </a>
+      <% }); %>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,92 @@
+<%- include('../partials/header', { title: 'Каталог' }) %>
+
+<div class="catalog-page">
+  <h1>Каталог книг и циклов</h1>
+
+  <form action="/" method="GET" class="filter-form">
+    <input
+      type="text"
+      name="q"
+      placeholder="Поиск по названию или автору"
+      value="<%= filters.q %>"
+      class="filter-search"
+    />
+
+    <select name="genre">
+      <option value="">Все жанры</option>
+      <% genres.forEach(function(g) { %>
+        <option value="<%= g.id %>" <%= String(filters.genre) === String(g.id) ? 'selected' : '' %>>
+          <%= g.name %>
+        </option>
+      <% }); %>
+    </select>
+
+    <select name="minRating">
+      <option value="">Любой рейтинг</option>
+      <option value="2" <%= filters.minRating === '2' ? 'selected' : '' %>>от 2★</option>
+      <option value="3" <%= filters.minRating === '3' ? 'selected' : '' %>>от 3★</option>
+      <option value="4" <%= filters.minRating === '4' ? 'selected' : '' %>>от 4★</option>
+    </select>
+
+    <select name="status">
+      <option value="">Любой статус</option>
+      <option value="single" <%= filters.status === 'single' ? 'selected' : '' %>>Отдельная книга</option>
+      <option value="ongoing" <%= filters.status === 'ongoing' ? 'selected' : '' %>>Цикл не завершён</option>
+      <option value="completed" <%= filters.status === 'completed' ? 'selected' : '' %>>Цикл завершён</option>
+    </select>
+
+    <select name="sort">
+      <option value="new" <%= filters.sort === 'new' ? 'selected' : '' %>>Сначала новые</option>
+      <option value="rating" <%= filters.sort === 'rating' ? 'selected' : '' %>>По рейтингу</option>
+      <option value="title" <%= filters.sort === 'title' ? 'selected' : '' %>>По названию</option>
+    </select>
+
+    <button type="submit" class="button">Найти</button>
+  </form>
+
+  <% if (entries.length === 0) { %>
+    <p class="empty-state">Ничего не найдено. Попробуйте изменить фильтры.</p>
+  <% } else { %>
+    <div class="entry-grid">
+      <% entries.forEach(function(entry) { %>
+        <a class="entry-card" href="/entries/<%= entry.id %>">
+          <% if (entry.cover_url) { %>
+            <img class="entry-cover" src="<%= entry.cover_url %>" alt="<%= entry.title %>" />
+          <% } %>
+          <div class="entry-card-body">
+            <h2><%= entry.title %></h2>
+            <p class="entry-author"><%= entry.author %></p>
+
+            <div class="badges">
+              <% if (entry.is_series) { %>
+                <% if (entry.series_status === 'completed') { %>
+                  <span class="badge badge-completed">Цикл завершён</span>
+                <% } else { %>
+                  <span class="badge badge-ongoing">Цикл продолжается</span>
+                <% } %>
+              <% } else { %>
+                <span class="badge badge-single">Отдельная книга</span>
+              <% } %>
+            </div>
+
+            <div class="genre-list">
+              <% entry.genres.forEach(function(g) { %>
+                <span class="genre-chip"><%= g.name %></span>
+              <% }); %>
+            </div>
+
+            <div class="rating">
+              <% if (entry.rating_count > 0) { %>
+                ★ <%= entry.avg_rating.toFixed(1) %> (<%= entry.rating_count %>)
+              <% } else { %>
+                <span class="muted">Ещё нет оценок</span>
+              <% } %>
+            </div>
+          </div>
+        </a>
+      <% }); %>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>

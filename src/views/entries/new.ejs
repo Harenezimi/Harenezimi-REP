@@ -1,0 +1,85 @@
+<%- include('../partials/header', { title: 'Новая запись' }) %>
+
+<div class="form-page">
+  <h1>Новая запись о книге или цикле</h1>
+
+  <% if (errors && errors.length) { %>
+    <ul class="error-list">
+      <% errors.forEach(function(err) { %>
+        <li><%= err.msg %></li>
+      <% }); %>
+    </ul>
+  <% } %>
+
+  <form action="/entries" method="POST" class="stack-form" id="entry-form">
+    <label>
+      Название
+      <input type="text" name="title" value="<%= values.title || '' %>" required maxlength="200" />
+    </label>
+
+    <label>
+      Автор
+      <input type="text" name="author" value="<%= values.author || '' %>" required maxlength="200" />
+    </label>
+
+    <label>
+      Описание
+      <textarea name="description" rows="6" required minlength="20"><%= values.description || '' %></textarea>
+      <small>Минимум 20 символов.</small>
+    </label>
+
+    <fieldset>
+      <legend>Жанры</legend>
+      <div class="genre-checkboxes">
+        <% genres.forEach(function(g) { %>
+          <label class="checkbox-label">
+            <input type="checkbox" name="genres" value="<%= g.name %>" />
+            <%= g.name %>
+          </label>
+        <% }); %>
+      </div>
+      <label>
+        Свой жанр (необязательно)
+        <input type="text" name="custom_genre" maxlength="50" />
+      </label>
+    </fieldset>
+
+    <label class="checkbox-label">
+      <input type="checkbox" name="is_series" id="is_series" />
+      Это цикл (серия книг)
+    </label>
+
+    <div id="series-fields" class="series-fields" hidden>
+      <label>
+        Статус цикла
+        <select name="series_status">
+          <option value="ongoing">Не завершён</option>
+          <option value="completed">Завершён</option>
+        </select>
+      </label>
+      <label>
+        Количество томов (необязательно)
+        <input type="number" name="volumes_count" min="1" />
+      </label>
+    </div>
+
+    <label>
+      Ссылка на обложку (необязательно)
+      <input type="url" name="cover_url" value="<%= values.cover_url || '' %>" placeholder="https://..." />
+    </label>
+
+    <button type="submit" class="button">Опубликовать</button>
+  </form>
+</div>
+
+<script>
+  const isSeriesCheckbox = document.getElementById('is_series');
+  const seriesFields = document.getElementById('series-fields');
+  function toggleSeriesFields() {
+    seriesFields.hidden = !isSeriesCheckbox.checked;
+  }
+  isSeriesCheckbox.addEventListener('change', toggleSeriesFields);
+  toggleSeriesFields();
+</script>
+
+<%- include('../partials/footer') %>

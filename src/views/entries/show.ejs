@@ -1,0 +1,145 @@
+<%- include('../partials/header', { title: entry.title }) %>
+
+<div class="entry-page">
+  <div class="entry-header">
+    <% if (entry.cover_url) { %>
+      <img class="entry-cover-large" src="<%= entry.cover_url %>" alt="<%= entry.title %>" />
+    <% } %>
+    <div>
+      <h1><%= entry.title %></h1>
+      <p class="entry-author"><%= entry.author %></p>
+
+      <div class="badges">
+        <% if (entry.is_series) { %>
+          <% if (entry.series_status === 'completed') { %>
+            <span class="badge badge-completed">Цикл завершён<% if (entry.volumes_count) { %> · <%= entry.volumes_count %> томов<% } %></span>
+          <% } else { %>
+            <span class="badge badge-ongoing">Цикл продолжается<% if (entry.volumes_count) { %> · <%= entry.volumes_count %> томов<% } %></span>
+          <% } %>
+        <% } else { %>
+          <span class="badge badge-single">Отдельная книга</span>
+        <% } %>
+      </div>
+
+      <div class="genre-list">
+        <% entry.genres.forEach(function(g) { %>
+          <span class="genre-chip"><%= g.name %></span>
+        <% }); %>
+      </div>
+
+      <p class="meta">
+        Добавил(а) <%= entry.author_username %> ·
+        <%= new Date(entry.created_at).toLocaleDateString('ru-RU') %>
+      </p>
+
+      <div class="rating-block">
+        <span class="rating-value">
+          <% if (entry.rating_count > 0) { %>
+            ★ <%= entry.avg_rating.toFixed(1) %> (<%= entry.rating_count %> оценок)
+          <% } else { %>
+            Ещё нет оценок
+          <% } %>
+        </span>
+
+        <% if (user) { %>
+          <form action="/entries/<%= entry.id %>/rating" method="POST" class="inline-form rating-form">
+            <% for (let i = 1; i <= 5; i++) { %>
+              <button
+                type="submit"
+                name="rating"
+                value="<%= i %>"
+                class="star-button <%= userRating && i <= userRating ? 'star-active' : '' %>"
+                title="Поставить <%= i %>★"
+              >★</button>
+            <% } %>
+          </form>
+        <% } else { %>
+          <p class="muted"><a href="/login">Войдите</a>, чтобы оценить.</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <section class="entry-description">
+    <h2>Описание</h2>
+    <p><%= entry.description %></p>
+  </section>
+
+  <section id="links" class="entry-links">
+    <h2>Где почитать</h2>
+    <% if (links.length === 0) { %>
+      <p class="muted">Пока никто не добавил ссылки.</p>
+    <% } else { %>
+      <ul class="links-list">
+        <% links.forEach(function(link) { %>
+          <li>
+            <span class="badge <%= link.link_type === 'purchase' ? 'badge-purchase' : 'badge-download' %>">
+              <%= link.link_type === 'purchase' ? 'Купить' : 'Скачать' %>
+            </span>
+            <a href="<%= link.url %>" target="_blank" rel="noopener noreferrer nofollow"><%= link.label %></a>
+            <span class="muted">— добавил(а) <%= link.username %></span>
+          </li>
+        <% }); %>
+      </ul>
+    <% } %>
+
+    <% if (user) { %>
+      <% if (linkErrors && linkErrors.length) { %>
+        <ul class="error-list">
+          <% linkErrors.forEach(function(err) { %>
+            <li><%= err.msg %></li>
+          <% }); %>
+        </ul>
+      <% } %>
+      <form action="/entries/<%= entry.id %>/links" method="POST" class="inline-form-row">
+        <select name="link_type">
+          <option value="purchase">Купить</option>
+          <option value="download">Скачать</option>
+        </select>
+        <input type="text" name="label" placeholder="Название источника (например, Litres)" maxlength="100" required />
+        <input type="url" name="url" placeholder="https://..." required />
+        <button type="submit" class="button button-small">Добавить ссылку</button>
+      </form>
+    <% } else { %>
+      <p class="muted"><a href="/login">Войдите</a>, чтобы добавить ссылку.</p>
+    <% } %>
+  </section>
+
+  <section id="comments" class="entry-comments">
+    <h2>Комментарии (<%= comments.length %>)</h2>
+
+    <% if (comments.length === 0) { %>
+      <p class="muted">Комментариев пока нет. Будьте первым!</p>
+    <% } else { %>
+      <ul class="comments-list">
+        <% comments.forEach(function(comment) { %>
+          <li class="comment">
+            <div class="comment-meta">
+              <strong><%= comment.username %></strong>
+              <span class="muted"><%= new Date(comment.created_at).toLocaleDateString('ru-RU') %></span>
+            </div>
+            <p><%= comment.content %></p>
+          </li>
+        <% }); %>
+      </ul>
+    <% } %>
+
+    <% if (user) { %>
+      <% if (commentErrors && commentErrors.length) { %>
+        <ul class="error-list">
+          <% commentErrors.forEach(function(err) { %>
+            <li><%= err.msg %></li>
+          <% }); %>
+        </ul>
+      <% } %>
+      <form action="/entries/<%= entry.id %>/comments" method="POST" class="stack-form">
+        <textarea name="content" rows="3" placeholder="Ваш комментарий..." required></textarea>
+        <button type="submit" class="button">Отправить</button>
+      </form>
+    <% } else { %>
+      <p class="muted"><a href="/login">Войдите</a>, чтобы оставить комментарий.</p>
+    <% } %>
+  </section>
+</div>
+
+<%- include('../partials/footer') %>
