@@ -4,6 +4,9 @@
   "description": "КнигоФорум — платформа для любителей книг",
   "private": true,
   "main": "src/app.js",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node src/app.js",
     "dev": "node --watch src/app.js",
